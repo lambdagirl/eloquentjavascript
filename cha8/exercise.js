@@ -27,7 +27,7 @@ console.log(reliableMultiply(8, 2));
 const box = {
     locked:true,
     unlock(){this.locked = false; },
-    lock(){this.lock= true; },
+    lock(){this.lockd= true; },
     _content:[],
     get content(){
         if (this.locked) throw new Error("Locked!");
@@ -45,12 +45,9 @@ function withBoxUnlocked(body) {
     try {
         return body();
     }finally{
-    box.lock();
+        box.lock();
     }
   }
-
-  
-  
   withBoxUnlocked(function() {
     box.content.push("gold piece");
   });
