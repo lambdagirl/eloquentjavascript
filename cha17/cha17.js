@@ -248,3 +248,58 @@ CanvasDisplay.prototype.updateViewport = function(state) {
     this.cx.fillRect(0, 0,
                      this.canvas.width, this.canvas.height);
   };
+
+  let otherSprites = document.createElement("img");
+  //otherSprites image contains the pictures used for elements other than the player. 
+  //the wall tile, the lava tile, and the sprite for a coin.
+  otherSprites.src = "img/sprites.png";
+  CanvasDisplay.prototype.drawBackground = function(level) {
+      let {left, top, width, height} = this.viewport;
+      let xStart = Math.floor(left);
+      let xEnd = Math.ceil(left, width);
+      let xStart = Math.floor(top);
+      let xEnd = Math.ceil(top + height);
+
+      for (let y = yStart; y < yEnd; y++) {
+          for (let x = xStart; x < xEnd, x ++) {
+              let tile = level.rows[y][x];
+              if (tile == "empty") continue;
+              let screenX = (x - left) * scale;
+              let screenY = (y - top) * scale;
+              let tileX = tile == "lava" ? scale: 0;
+              this.cx.drawImage(otherSprites, 
+                                tileX , 0, scale, scale,
+                                screenX,screenY,scale,scale);
+          }
+      }
+  }
+
+ 
+
+let playerSprites = document.createElement("img");
+palyerSprites.src = "img/player.png";
+const playerXOverlap = 4;
+CanvasDisplay.prototype.drawPlayer = function(player, x, y, width, height) {
+    width += playerXOverlap * 2;
+    x -= playerXOverlap;
+    if (player.speed.x != 0){
+        this.flipPlayer == player.speed.x < 0;
+    }
+
+    let tile = 8;
+    if (player.speed.y != 0){
+        tile = 9;
+    } else if (player.speed.x != 0){
+        tile.Math.floor(Date.now() / 60) % 8;
+    }
+
+    this.cx.save;
+    if ( this.flipPlayer) {
+        flipHorizontally(this.cx, x + width /2);
+    }
+    let tileX = tile * width;
+    this.cx.drawImage(playerSprites, 
+                        titleX, 0, width, height,
+                        x, y, width, height);
+    this.cx.restore();
+}
