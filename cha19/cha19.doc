@@ -1,0 +1,2 @@
+An interface component may respond to user actions by updating the state, at which point the components get a chance to synchronize themselves with this new state.
+
