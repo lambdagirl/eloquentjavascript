@@ -23,10 +23,11 @@ async function notAllowed(request) {
   };
 }
 
-var {parse} = require("url");
-var {resolve, sep} = require("path");
+const {parse} = require("url");
+const {resolve, sep} = require("path");
 
-var baseDirectory = process.cwd();
+//cwd(current working directory
+const baseDirectory = process.cwd();
 
 function urlPath(url) {
   let {pathname} = parse(url);
@@ -37,6 +38,7 @@ function urlPath(url) {
   }
   return path;
 }
+
 
 const {createReadStream} = require("fs");
 const {stat, readdir} = require("fs").promises;
@@ -58,7 +60,6 @@ methods.GET = async function(request) {
             type: mime.getType(path)};
   }
 };
-
 const {rmdir, unlink} = require("fs").promises;
 
 methods.DELETE = async function(request) {
@@ -77,20 +78,21 @@ methods.DELETE = async function(request) {
 
 const {createWriteStream} = require("fs");
 
-function pipeStream(from, to) {
-  return new Promise((resolve, reject) => {
-    from.on("error", reject);
-    to.on("error", reject);
-    to.on("finish", resolve);
-    from.pipe(to);
-  });
-}
 
-methods.PUT = async function(request) {
-  let path = urlPath(request.url);
-  await pipeStream(request, createWriteStream(path));
-  return {status: 204};
-};
+function pipeStream(from, to) {
+    return new Promise((resolve, reject) => {
+      from.on("error", reject);
+      to.on("error", reject);
+      to.on("finish", resolve);
+      from.pipe(to);
+    });
+  }
+  
+  methods.PUT = async function(request) {
+    let path = urlPath(request.url);
+    await pipeStream(request, createWriteStream(path));
+    return {status: 204};
+  };
 
 const {mkdir} = require("fs").promises;
 
