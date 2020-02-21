@@ -147,12 +147,30 @@ SkillShareServer.prototype.waitForChanges = function(time){
         }, time * 1000);
     })
 }
-//Registering a change with updated increases the version property and wakes up all waiting requests.
-SkillShareServer.prototype.updated = function(){
-    this.version++;
-    let response = this.talkResponse();
-    this.waiting.forEach(resolve => resolve(response));
-    this.waiting = [];
-}
 
-new SkillShareServer(Object.create(null)).start(8000);
+const {readFileSync, writeFile} = require("fs");
+const fileName = "./talks.json";
+function loadTalks() {
+    let json;
+    try {
+      json = JSON.parse(readFileSync(fileName, "utf8"));
+    } catch (e) {
+      json = {};
+    }
+    return Object.assign(Object.create(null), json);
+  }
+
+//Registering a change with updated increases the version property and wakes up all waiting requests.
+SkillShareServer.prototype.updated = function() {
+  this.version++;
+  let response = this.talkResponse();
+  this.waiting.forEach(resolve => resolve(response));
+  this.waiting = [];
+
+  writeFile(fileName, JSON.stringify(this.talks), e => {
+    if (e) throw e;
+  });
+};
+
+
+new SkillShareServer(loadTalks()).start(8000);
