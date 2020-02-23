@@ -130,6 +130,13 @@ PictureCanvas.prototype.touch = function(startEvent, onDown){
 //The Application
 class PixelEditor{
     constructor(state, config){
-        
+        let {tools, controls,dispatch} = config;
+        this.state = state;
+
+        this.canvas = new PictureCanvas(state.picture, pos => {
+            let tool = tools[this.state.tool];
+            let onMove = tool(pos, this.state, dispatch);
+
+        })
     }
 }
