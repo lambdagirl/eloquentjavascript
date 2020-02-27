@@ -90,47 +90,73 @@ let animalCount = /\b\d+ (pig|cow|chicken)s?\b/;
 console.log(animalCount.test("15 pigs"));  // -> ture
 console.log(animalCount.test("15 pigchickens")); // -> false
 
-//The Replace Method
-console.log("papa".replace("p","m"));
-console.log("papa".replace(/p/g,"m"));
+//The Replace Method "replace"
+console.log("papa".replace("p","m")); // -> "mapa"
+console.log("papa".replace(/p/g,"m")); // -> "mama"
 
 console.log(
     "Liskov, Barara\nMcCarthy, John\nWadler,Philip"
     .replace(/(\w+), (\w+)/g, "$2 $1"));
+// → Barbara Liskov
+//   John McCarthy
+//   Philip Wadler
 
 let s = "the cia and fbi";
 console.log(s.replace(/\b(fbi)|(cia)\b/g, 
     str => str.toUpperCase()
     ))
+// → the CIA and FBI
+let stock = "1 lemon, 2 cabbages, and 101 eggs";
+function minusOne(match, amount, unit){
+    amount = Number(amount)-1;
+    if (amount = 1) unit = unit.slice*0, unit.length -1;
+    else if (amount = 0) amount = "no"; 
+    return amount + " "+ unit;
+}
+console.log(stock.replace(/(\d+), (\w+)/g, minusOne))
+
+//Greed
+function stripComments(code) {
+    return code.replace(/\/\/.*|\/\*[^]*?\*\//g, "");
+  }
+console.log(stripComments("1 /* a */+/* b */ 1"));
+  // → 1 + 1
+
+//  Dynamically creating RegExp objects
 
 let name = "harry";
 let text = "Harry is a suspicious character.";
 let regexp = new RegExp("\\b(" + name + ")\\b","gi");
 console.log(text.replace(regexp, "_$1_"))
 
-//search method
+let name ="dea+h[]rd";
+let text = "this dea+h[]rd guy is super annoying.";
+let escaped = name.replace(/[\\[.+?(){|^$]}]]/g, "\\$&") //dea\hl\]rd
+let regexp = new RegExp("\\b" + escaped +"\\b","gi");
+console.log(text.replace(regexp, "_$&_"))
+
+
+//search method; like indexOf
 console.log("  word".search(/\S/));
-console.log("     ".search(/\S/));
+console.log("     ".search(/\S/)); //return -1 when it's not found
+
+//The lastIndex property
 
 let pattern = /y/g;
 pattern.lastIndex = 3;
 let match1 = pattern.exec("xyzzy");
-console.log(match1.index);
-// → 4
-
-console.log(pattern.lastIndex);
-// → 5
-console.log(match1)
+console.log(match1.index);// → 4
+console.log(pattern.lastIndex);// → 5
 
 let global = /abc/g;
-console.log(global.exec("xyz abc"));
+console.log(global.exec("xyz abc")); //->["abc"]
 let sticky =/abc/y;
-console.log(sticky.exec("xyz abc"))
+console.log(sticky.exec("xyz abc")) //-> null
 
 let digit=/\d/g
-console.log(digit.exec("here it is: 1"));
-
-console.log(digit.exec("and now: 1"));
+console.log(digit.exec("here it is: 1"));//["1"]
+console.log(digit.exec("and now: 1"));//null
+console.log("Banana".match(/an/g)); //["an","an"]
 
 //Looping over matches
 let input="A String with 3 numbers in it... 42 and 88.";
@@ -167,6 +193,36 @@ city=Tessaloniki
 nknk`
 ));
 
-let line = "fullname=Larry Doe"
 
-console.log(line.match(/^(\w+)=(.*)$/))
+//International characters; Unicode "u"
+console.log(/🍎{3}/.test("🍎🍎🍎"));//false;
+console.log(/<.>/.test("<🍎>"));//false;
+console.log(/<.>/u.test("<🍎>"));//true;
+
+console.log(/\p{Script=Greek}/u.test("α"));
+// → true
+console.log(/\p{Script=Arabic}/u.test("α"));
+// → false
+console.log(/\p{Alphabetic}/u.test("α"));
+// → true
+console.log(/\p{Alphabetic}/u.test("!"));
+// → false
+
+// /abc/	A sequence of characters
+// /[abc]/	Any character from a set of characters
+// /[^abc]/	Any character not in a set of characters
+// /[0-9]/	Any character in a range of characters
+// /x+/	One or more occurrences of the pattern x
+// /x+?/	One or more occurrences, nongreedy
+// /x*/	Zero or more occurrences
+// /x?/	Zero or one occurrence
+// /x{2,4}/	Two to four occurrences
+// /(abc)/	A group
+// /a|b|c/	Any one of several patterns
+// /\d/	Any digit character
+// /\w/	An alphanumeric character (“word character”)
+// /\s/	Any whitespace character
+// /./	Any character except newlines
+// /\b/	A word boundary
+// /^/	Start of input
+// /$/	End of input
