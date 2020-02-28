@@ -1,12 +1,12 @@
-//interfaces, limited sets of functions or bindings that provide 
+//interfaces接口, limited sets of functions or bindings that provide 
 //functionality at a more abstract level, hiding their precise implementation.
 
-//Encapsulation(Separating interface from implementation is a great idea. )
+//Encapsulation封装(Separating interface from implementation is a great idea. )
 
 //divide programs into smaller pieces and make each piece responsible 
 //for managing its own state.
 
-//methods and propertirs
+//methods and properties
 //Properties that are part of the interface are called public. 
 //The others, which outside code should not be touching, are private. (_)
 
@@ -158,4 +158,133 @@ Rabbit.prototype.toString = function(){
 }
 console.log(String(blackRabbit));
 
-//Symbols
+ 
+//Symbols:Unlike strings, newly created symbols are unique—you cannot create the same symbol twice.
+let sym = Symbol("name");
+console.log(sym = Symbol("name"));
+//-> false;
+Rabbit.prototype.sym =55;
+console.log(blackRabbit.sym); //-> 55;
+
+//unique and usable as property names
+const toStringSymbol = Symbol("toString");
+Array.prototype[toStringSymbol] = function(){
+    return `${this.length} cm of blue yarn`;
+}
+console.log([1,2].toString()); //-> 1,2
+console.log([1,2][toStringSymbol]()); // → 2 cm of blue yarn
+
+let stringObject = {
+    [toStringSymbol](){return "a jute rope";}
+}
+console.log(stringObject[toStringSymbol()]); // -> a jute rope;
+
+
+//The interator interface; ("Symbol.iterator");
+//next, value, and done 
+let okInterator = "OK"[Symbol.iterator]();
+console.log(okInterator.next()); // → {value: "O", done: false}
+console.log(okInterator.next()); // → {value: "K", done: false}
+console.log(okInterator.next()) //// → {value: undefined, done: true}
+
+
+//interable structure, build a matrix calss, 2-dimensional array;
+//elements are stored row by row, so, for example, the third element in the fifth row is (using zero-based indexing) stored at position 4 × width + 2.
+//optional element function that will be used to fill in the initial values.
+class Matrix {
+    constructor(width, height, element = (x,y) => undefined) {
+        this.width = width; 
+        this.height = height;
+        this.content = [];
+        for (let y = 0; y < height; y++){
+            for (let x = 0; x < width; x++){
+                this.content[y*width + x] = element(x,y);
+            }
+        }
+    }
+    get(x,y){
+        return this.content[y*this.width + x];
+    }
+    set(x,y,value){
+        this.content[y * this.width + x] = value;
+    }
+}
+//
+class MatrixIterator {
+    constructor(matrix){
+        this.x = 0;
+        this.y = 0;
+        this.matrix = matrix;
+    }
+    
+}
+
+//Getters, setters, and statics
+//Interfaces often consist mostly of methods, 
+//but it is also okay to include properties that hold non-function values. 
+//For example, Map objects have a size property that tells you how many keys are stored in them.
+
+let verfyingSize = {
+    get size(){
+        return Math.floor(Math.random()*100)
+    }
+}
+console.log(varyfingSize.size); //->73
+console.log(verfyingSize.size); //->49
+
+
+class Temperature{
+    constructor(celsius){
+        this.celsius = celsius;
+    }
+    get fahrenheit(){
+        return this.celsius * 1.8 + 32;
+    }
+    set fahrenheit(value){
+        this.celsius = (value - 32) / 1.8;
+    }
+    static fromFahrenheit(value){
+        return new Temperature((value -32)/1.8);
+    }
+}
+
+let temp = new Temperature(22);
+console.log(temp.fahrenheit); // -> 71.6;
+temp.fahrenheit = 86;
+console.log(temp.celsius); //-> 30;
+
+//Inheritance
+
+//The use of the word extends indicates that 
+//this class shouldn’t be directly based on the default Object prototype 
+//but on some other class. This is called the superclass. The derived class is the subclass.
+class SymmericMatrix extends Matrix {
+    constructor(size, element = (x, y) => undefined) {
+        // the constructor calls its superclass’s constructor through the super keyword. 
+        super(size, size, (x,y) => {
+            if (x < y) return element(y, x);
+            else return element(x, y);
+        });
+    }
+    set(x, y, value){
+        super.set(x,y,value);
+        if (x != y){
+            super.set(y,x,value);
+        }
+    }
+}
+
+let matrix = new SymmericMatrix(5, (x,y)=> `${x},${y}`);
+console.log(matrix.get(2,3))
+
+
+//The instanceof operator
+  console.log(
+    new SymmetricMatrix(2) instanceof SymmetricMatrix);
+  // → true
+  console.log(new SymmetricMatrix(2) instanceof Matrix);
+  // → true
+  console.log(new Matrix(2, 2) instanceof SymmetricMatrix);
+  // → false
+  console.log([1] instanceof Array);
+  // → true

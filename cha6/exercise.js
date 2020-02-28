@@ -16,6 +16,7 @@ class Vec{
             this.y -vector.y
         )
     }
+    //Adding a getter property to the constructor can be done by putting the word get before the method name.
     get length() {
         return Math.sqrt(this.x**2 + this.y**2);
     }
